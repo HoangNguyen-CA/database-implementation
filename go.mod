@@ -1,4 +1,4 @@
-module hn-db
+module github.com/HoangNguyen-CA/database-implementation
 
 go 1.22.4
 

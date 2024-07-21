@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"unsafe"
+
+	"github.com/HoangNguyen-CA/database-implementation/pkg/utils"
 )
 
 type BNode struct {
@@ -43,16 +45,12 @@ func (node BNode) setHeader(btype uint16, nkeys uint16) {
 
 // pointers
 func (node BNode) getPtr(idx uint16) uint64 {
-	if idx >= node.nkeys() {
-		panic("idx >= node.nkeys()")
-	}
+	utils.Assert(idx < node.nkeys())
 	pos := HEADER + 8*idx
 	return binary.LittleEndian.Uint64(node.data[pos:])
 }
 func (node BNode) setPtr(idx uint16, val uint64) {
-	if idx >= node.nkeys() {
-		panic("idx >= node.nkeys()")
-	}
+	utils.Assert(idx < node.nkeys())
 	pos := HEADER + 8*idx
 	binary.LittleEndian.PutUint64(node.data[pos:], val)
 }
@@ -108,9 +106,7 @@ func (node BNode) nbytes() uint16 {
 
 func init() {
 	node1max := HEADER + 8 + 2 + 4 + BTREE_MAX_KEY_SIZE + BTREE_MAX_VAL_SIZE
-	if node1max > BTREE_PAGE_SIZE {
-		panic("node1max > BTREE_PAGE_SIZE")
-	}
+	utils.Assert(node1max <= BTREE_PAGE_SIZE)
 }
 
 // returns the first kid node whose range intersects the key. (kid[i] <= key)
